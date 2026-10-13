@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cityrush-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: cityrush-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      SQL_HOST: db
+      SQL_DB_NAME: postgres
+      SQL_USER: postgres
+      SQL_PASSWORD: password
+      SQL_ADMIN_USER: postgres
+      SQL_ADMIN_PASSWORD: password
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
